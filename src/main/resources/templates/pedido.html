@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <div th:replace="fragments/header :: header"></div>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar ('pedido')"></div>
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-lg-12 d-flex justify-content-center" th:if="${atencion == null}">
+            <div class="alert alert-light my-auto" role="alert">
+                <h4>LO SENTIMOS, NO TIENES UNA MESA ASIGNADA. NO PUEDES ORDENAR AÚN</h4>
+            </div>
+        </div>
+        <div class="col-12 p-0" th:if="${atencion}">
+            <div class="alert alert-info" role="alert">
+                <h5 class="display-5 m-0"><i class="fa fa-info-circle pr-1" aria-hidden="true"></i> Tienes asignada la mesa N&deg; <span th:text="${atencion.numeroMesa}"></span>. Nuestro equipo en la cocina espera tu pedido</h5>
+            </div>
+        </div>
+        <div class="col-lg-12 d-flex justify-content-center" th:if="${atencion} and ${itemsPedido.size() == 0}">
+            <div class="alert alert-light my-auto" role="alert" th:if="${pedido == null}">
+                <h4>NO HAS PEDIDO AÚN</h4>
+            </div>
+            <div class="alert alert-success my-auto" role="alert" th:if="${pedido != null}">
+                <h4 class="alert-heading">Tu pedido ha sido ingresado con éxito!</h4>
+                <p>Nuestro equipo en la cocina pronto comenzará la preparación de lo que ordenaste.</p>
+                <hr>
+                <p class="mb-0">En breve estaremos informando sobre el estado de tu pedido.</p>
+            </div>
+        </div>
+        <div class="col-lg-12" th:if="${atencion} and ${itemsPedido.size() > 0}">
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item" th:each="item : ${itemsPedido}">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1" th:text="${recetas.get(item.value.recetaId).nombre}"></h5>
+                        <a href="#" role="button" class="btn btn-outline-danger btn-sm"
+                           th:href="@{/pedido/items/{id}/quitar(id=${item.key})}"
+                           data-toggle="tooltip" data-placement="right" title="Quitar"><i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                    <small class="text-muted" th:text="${item.value.comentario}"></small>
+                </li>
+            </ul>
+            <form action="#" th:action="@{/pedido}" method="POST">
+                <div class="form-group mb-1">
+                    <div class="input-group">
+                        <input type="hidden" class="form-control" th:value="${atencion.id}" th:name="atencion-id"/>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary float-right">CONFIRMAR PEDIDO</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:insert="fragments/common-scripts :: common-scripts"></div>
+</body>
+</html>

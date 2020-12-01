@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <div th:replace="fragments/header :: header"></div>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar ('home')"></div>
+<div class="jumbotron jumbotron-image text-center">
+    <h1 class="display-4 text-white">Reserva Online! Sin filas ni listas de espera</h1>
+    <hr class="my-4">
+    <a class="btn btn-outline-light btn-lg" th:href="@{/acceder}" role="button">RESERVA TU MESA</a>
+</div>
+<div class="container">
+    <div class="row">
+        <h2 class="mx-auto p-4">NUESTRA CARTA</h2>
+    </div>
+    <div class="col-12">
+        <ul class="nav nav-pills nav-justified" id="pills-tab" role="tablist">
+            <li class="nav-item" th:each="categoria, i : ${categorias}">
+                <a class="nav-link" id="pills-home-tab" data-toggle="pill" th:href="'#pills-' + ${categoria.id}"
+                   role="tab" th:text="${categoria.nombre.toUpperCase()}"
+                   th:classappend="${i.index == 0 ? 'active' : ''}"
+                   th:aria-selected="${i.index == 0 ? true : false}"></a>
+            </li>
+        </ul>
+    </div>
+    <hr class="border">
+    <div class="col-12">
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade" th:each="recetas, i : ${recetasByCategoria}" role="tabpanel"
+                 th:id="'pills-' + ${recetas.key}" th:classappend="${i.index == 0 ? 'show active' : ''}">
+                <div class="row">
+                    <div class="col-md-6 mb-2" th:each="receta : ${recetas.value}">
+                        <form action="#" th:action="@{/pedido/agregar}" method="POST">
+                            <input type="hidden" class="form-control form-control-sm" th:value="${receta.id}" th:name="receta-id"/>
+                            <div class="media d-flex w-100 justify-content-between">
+                                <div class="media-body mr-2">
+                                    <h6 class="media-heading" th:text="${receta.nombre}"></h6>
+                                    <small class="text-muted" th:text="${receta.descripcion}"></small>
+                                    <small class="text-right" th:text="${#strings.replace(#strings.replace(#numbers.formatCurrency(receta.precio), '.00', ''), ',', '.')}"></small>
+
+                                    <br>
+                                    <div th:if="${atencion != null}">
+                                        <a class="small" data-toggle="collapse" th:href="'#collapseText' + ${receta.id}" aria-expanded="false">
+                                            <span><i class="fa fa-caret-right mr-1" aria-hidden="true"></i> Agrega un comentario</span>
+                                        </a>
+                                        <div class="collapse" th:id="'collapseText' + ${receta.id}">
+                                            <input type="text" class="form-control form-control-sm" th:name="receta-comentario"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="media-right">
+                                    <img class="media-object" th:src="@{/images/{imagen}(imagen=${receta.imagen})}" style="height: 140px; width: 140px;">
+                                </div>
+                            </div>
+                            <div class="form-group mt-2" th:if="${atencion != null}">
+                                <button type="submit" class="btn btn-primary btn-block">AGREGAR AL PEDIDO</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:insert="fragments/common-scripts :: common-scripts"></div>
+</body>
+</html>

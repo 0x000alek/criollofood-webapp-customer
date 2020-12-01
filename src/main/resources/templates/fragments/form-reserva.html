@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<body>
+    <div th:fragment="form-reserva (reservacion)">
+        <form action="#" th:action="@{/reservaciones}" method="POST" class="form-horizontal"
+              th:object="${reservacion}" role="form" th:autocomplete="off">
+            <h4 class="pb-3 pt-2">Haz tu reserva aqu&iacute;</h4>
+            <lavel for="fecha-reservacion" class="col-form-label">¿Para cu&aacute;ndo?</lavel>
+            <div class="form-row">
+                <div class="form-group mb-1 col-12">
+                    <div class="input-group date">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-transparent border-right-0"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <input type="text" class="form-control border-left-0" id="fecha-reservacion"
+                               th:field="*{fecha}" placeholder="dd/mm/aaaa"/>
+                    </div>
+                    <label th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"
+                           style="color: #FF1C19;"></label>
+                </div>
+                <!--
+                <div class="form-group mb-1 col-5 pl-0">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-transparent border-right-0"><i class="fa fa-clock-o"></i></span>
+                        </div>
+                        <select class="custom-select" id="ora-reservacion">
+                            <option selected>hh:mm</option>
+                            <option value="1">13:00</option>
+                            <option value="2">14:00</option>
+                            <option value="3">15:00</option>
+                        </select>
+                    </div>
+                </div>
+                -->
+            </div>
+            <div class="form-group mb-1">
+                <lavel for="nro-asistentes" class="col-form-label">¿Para cu&aacute;ntas personas?</lavel>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-transparent border-right-0"><i class="fa fa-users"></i></span>
+                    </div>
+                    <input type="number" class="form-control border-left-0" id="nro-asistentes" min="0"
+                           th:field="*{asistentes}">
+                </div>
+                <label th:if="${#fields.hasErrors('asistentes')}" th:errors="*{asistentes}" class="mb-0"
+                       style="color: #FF1C19;"></label>
+            </div>
+            <hr>
+            <h5>Datos de contacto</h5>
+            <div class="form-group mb-2">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-transparent border-right-0"><i class="fa fa-user"></i></span>
+                    </div>
+                    <input type="text" class="form-control border-left-0" id="nombre-cliente"
+                           th:field="*{nombreCliente}" placeholder="Tu nombre">
+                </div>
+                <label th:if="${#fields.hasErrors('nombreCliente')}" th:errors="*{nombreCliente}"
+                       style="color: #FF1C19;"></label>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text bg-transparent border-right-0"><i class="fa fa-mobile"></i></span>
+                    </div>
+                    <input type="text" class="form-control border-left-0" id="telefono-cliente"
+                           th:field="*{telefonoCliente}" placeholder="Tu teléfono">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fa fa-calendar-check-o pr-1"></i>CONFIRMAR RESERVA</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
