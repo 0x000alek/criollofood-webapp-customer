@@ -29,6 +29,7 @@ public class HomeController {
         ModelAndView modelAndView = new ModelAndView();
         if (authenticationFacade.isAuthenticated()) {
             modelAndView.addObject("atencion", session.getAttribute("atencion"));
+            modelAndView.addObject("pedido", session.getAttribute("pedido"));
         }
         modelAndView.addObject("categorias", categoriaService.getCategoriasEnCarta());
         modelAndView.addObject("recetasByCategoria", recetaService.getRecetasByCategoria());

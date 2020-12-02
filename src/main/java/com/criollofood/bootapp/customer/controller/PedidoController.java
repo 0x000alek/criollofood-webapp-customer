@@ -50,14 +50,14 @@ public class PedidoController {
     }
 
     @PostMapping(value = "/pedido")
-    public ModelAndView confirmar(@RequestParam("atencion-id") BigDecimal atencionId,
+    public ModelAndView confirmarPedido(@RequestParam("atencion-id") BigDecimal atencionId,
                                   HttpSession session) {
         session.setAttribute("pedido", pedidoService.create(atencionId));
         return new ModelAndView("redirect:/pedido");
     }
 
     @PostMapping(value = "/pedido/agregar")
-    public ModelAndView agregar(@RequestParam("receta-id") BigDecimal recetaId,
+    public ModelAndView agregarAlPedido(@RequestParam("receta-id") BigDecimal recetaId,
                                 @RequestParam("receta-comentario") String recetaComentario,
                                 HttpSession session) {
         Pedido pedido = (Pedido) session.getAttribute("pedido");

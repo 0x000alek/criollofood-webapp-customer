@@ -130,24 +130,38 @@ END LISTAR_RECETAS_DISPONIBLES;
 -- ATENCION
 
 CREATE OR REPLACE
-PROCEDURE OBTENER_ATENCION_BY_ID_CLIENTE
+PROCEDURE OBTENER_ATENCION_ACTIVA_BY_ID_CLIENTE
 (i_cliente_id IN CORE_CLIENTE.ID%TYPE,
  o_id OUT ATENCION_ATENCION.ID%TYPE,
+ o_total OUT ATENCION_ATENCION.TOTAL%TYPE,
+ o_fecha OUT ATENCION_ATENCION.FECHA%TYPE,
+ o_esta_activo OUT ATENCION_ATENCION.ESTA_ACTIVO%TYPE,
+ o_esta_pagada OUT ATENCION_ATENCION.ESTA_PAGADA%TYPE,
  o_numero_mesa OUT ATENCION_ATENCION.NUMERO_MESA%TYPE,
  o_sql_code OUT NUMBER) AS
 BEGIN
     select
-        ID, NUMERO_MESA
+        ID,
+        TOTAL,
+        FECHA,
+        ESTA_ACTIVO,
+        ESTA_PAGADA,
+        NUMERO_MESA
     into
-        o_id, o_numero_mesa
+        o_id,
+        o_total,
+        o_fecha,
+        o_esta_activo,
+        o_esta_pagada,
+        o_numero_mesa
     from ATENCION_ATENCION
-    where CLIENTE_ID = i_cliente_id;
+    where CLIENTE_ID = i_cliente_id and ESTA_ACTIVO = 1;
 
     o_sql_code := 1;
 EXCEPTION
     WHEN OTHERS THEN
         o_sql_code := 0;
-END OBTENER_ATENCION_BY_ID_CLIENTE;
+END OBTENER_ATENCION_ACTIVA_BY_ID_CLIENTE;
 
 -- PEDIDO
 
@@ -161,8 +175,8 @@ PROCEDURE CREAR_PEDIDO
 BEGIN
     v_fecha_ingreso := CURRENT_TIMESTAMP;
 
-    insert into ATENCION_PEDIDO (ESTADO, FECHA_INGRESO, ATENCION_ID)
-    values ('INGRESADO', v_fecha_ingreso, i_atencion_id);
+    insert into ATENCION_PEDIDO (ESTADO, FECHA_INGRESO, ATENCION_ID, GARZON_ID)
+    values ('INGRESADO', v_fecha_ingreso, i_atencion_id, 21);
 
     select ID into v_pedido_id from ATENCION_PEDIDO where FECHA_INGRESO = v_fecha_ingreso;
 
@@ -205,20 +219,35 @@ EXCEPTION
 END OBTENER_PEDIDO_BY_ID_ATENCION;
 
 CREATE OR REPLACE
-PROCEDURE AGREGAR_AL_PEDIDO
-(i_pedido_id IN ATENCION_PEDIDO.ID%TYPE,
- i_receta_id IN PRODUCTOS_RECETA.ID%TYPE,
- i_cantidad IN NUMBER,
+PROCEDURE AGREGAR_RECETA_PEDIDO
+(i_comentario IN ATENCION_PEDIDO_RECETA.COMENTARIO%TYPE,
+ i_pedido_id IN ATENCION_PEDIDO_RECETA.PEDIDO_ID%TYPE,
+ i_receta_id IN ATENCION_PEDIDO_RECETA.RECETA_ID%TYPE,
+ o_id OUT ATENCION_PEDIDO_RECETA.ID%TYPE,
  o_sql_code OUT NUMBER) AS
 BEGIN
-    insert into ATENCION_PEDIDO_RECETA (PEDIDO_ID, RECETA_ID, CANTIDAD)
-    values (i_pedido_id, i_receta_id, i_cantidad);
+    insert into ATENCION_PEDIDO_RECETA (COMENTARIO, PEDIDO_ID, RECETA_ID, ESTADO)
+    values (i_comentario, i_pedido_id, i_receta_id, 'PENDIENTE');
+
+    select max(ID)
+    into o_id
+    from ATENCION_PEDIDO_RECETA
+    where PEDIDO_ID = i_pedido_id and RECETA_ID = i_receta_id;
 
     o_sql_code := 1;
 EXCEPTION
     WHEN OTHERS THEN
         o_sql_code := 0;
-END AGREGAR_AL_PEDIDO;
+END AGREGAR_RECETA_PEDIDO;
+
+CREATE OR REPLACE
+PROCEDURE LISTAR_RECETAS_BY_ID_PEDIDO
+(i_pedido_id IN ATENCION_PEDIDO_RECETA.PEDIDO_ID%TYPE,
+ o_recetas_pedido_cursor OUT SYS_REFCURSOR) AS
+BEGIN
+    open o_recetas_pedido_cursor for
+        select * from ATENCION_PEDIDO_RECETA where PEDIDO_ID = i_pedido_id;
+END LISTAR_RECETAS_BY_ID_PEDIDO;
 
 -- CATEGORIA
 

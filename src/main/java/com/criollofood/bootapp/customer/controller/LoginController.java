@@ -67,8 +67,6 @@ public class LoginController {
             cliente = clienteService.findByCorreoOrDefault(correoCliente, new Cliente(correoCliente));
             Atencion atencion = atencionService.findByIdCliente(cliente.getId());
 
-            LOGGER.info("atencion: " + atencion.toString());
-
             session.setAttribute("cliente", cliente);
             session.setAttribute("atencion", atencion);
             session.setAttribute("pedido", pedidoService.findByIdAtencion(atencion));

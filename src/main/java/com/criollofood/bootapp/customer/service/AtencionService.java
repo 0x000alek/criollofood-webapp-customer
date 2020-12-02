@@ -1,7 +1,7 @@
 package com.criollofood.bootapp.customer.service;
 
 import com.criollofood.bootapp.customer.domain.Atencion;
-import com.criollofood.bootapp.customer.sql.ObtenerAtencionByIdClienteSP;
+import com.criollofood.bootapp.customer.sql.ObtenerAtencionActivaByIdClienteSP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,14 +10,14 @@ import java.util.Objects;
 
 @Service
 public class AtencionService {
-    private final ObtenerAtencionByIdClienteSP obtenerAtencionByIdClienteSP;
+    private final ObtenerAtencionActivaByIdClienteSP obtenerAtencionActivaByIdClienteSP;
 
-    public AtencionService(@Autowired ObtenerAtencionByIdClienteSP obtenerAtencionByIdClienteSP) {
-        this.obtenerAtencionByIdClienteSP = obtenerAtencionByIdClienteSP;
+    public AtencionService(@Autowired ObtenerAtencionActivaByIdClienteSP obtenerAtencionActivaByIdClienteSP) {
+        this.obtenerAtencionActivaByIdClienteSP = obtenerAtencionActivaByIdClienteSP;
     }
 
     public Atencion findByIdCliente(BigDecimal clienteId) {
-        return obtenerAtencionByIdClienteSP.execute(clienteId);
+        return obtenerAtencionActivaByIdClienteSP.execute(clienteId);
     }
 
     public Atencion findByIdClienteOrDefault(BigDecimal clienteId, Atencion atencionDefault) {

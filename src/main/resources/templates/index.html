@@ -41,7 +41,7 @@
                                     <small class="text-right" th:text="${#strings.replace(#strings.replace(#numbers.formatCurrency(receta.precio), '.00', ''), ',', '.')}"></small>
 
                                     <br>
-                                    <div th:if="${atencion != null}">
+                                    <div th:if="${atencion} and ${pedido == null}">
                                         <a class="small" data-toggle="collapse" th:href="'#collapseText' + ${receta.id}" aria-expanded="false">
                                             <span><i class="fa fa-caret-right mr-1" aria-hidden="true"></i> Agrega un comentario</span>
                                         </a>
@@ -54,7 +54,7 @@
                                     <img class="media-object" th:src="@{/images/{imagen}(imagen=${receta.imagen})}" style="height: 140px; width: 140px;">
                                 </div>
                             </div>
-                            <div class="form-group mt-2" th:if="${atencion != null}">
+                            <div class="form-group mt-2" th:if="${atencion} and ${pedido == null}">
                                 <button type="submit" class="btn btn-primary btn-block">AGREGAR AL PEDIDO</button>
                             </div>
                         </form>

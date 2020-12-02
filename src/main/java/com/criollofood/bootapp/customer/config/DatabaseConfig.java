@@ -59,7 +59,7 @@ public class DatabaseConfig {
 
             HikariConfig hkConfig = new HikariConfig();
             hkConfig.setDataSource(oracleDataSource);
-            hkConfig.setPoolName("HikariTBKPool");
+            hkConfig.setPoolName("HikariCFPool");
             hkConfig.setMaximumPoolSize(maxPoolSize);
             hkConfig.setConnectionTimeout(timeoutConnection);
 

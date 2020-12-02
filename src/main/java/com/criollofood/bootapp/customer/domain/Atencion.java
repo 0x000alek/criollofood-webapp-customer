@@ -3,12 +3,15 @@ package com.criollofood.bootapp.customer.domain;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class Atencion implements Serializable {
     private static final long serialVersionUID = -4724364736958768971L;
 
     private BigDecimal id;
     private String codigo;
+    private BigDecimal total;
+    private Date fecha;
     private boolean estaActivo;
     private boolean estaPagada;
     @NotNull
@@ -30,6 +33,22 @@ public class Atencion implements Serializable {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
     public boolean isEstaActivo() {
@@ -69,6 +88,8 @@ public class Atencion implements Serializable {
         return "Atencion{" +
                 "id=" + id +
                 ", codigo='" + codigo + '\'' +
+                ", total=" + total +
+                ", fecha=" + fecha +
                 ", estaActivo=" + estaActivo +
                 ", estaPagada=" + estaPagada +
                 ", clienteId=" + clienteId +

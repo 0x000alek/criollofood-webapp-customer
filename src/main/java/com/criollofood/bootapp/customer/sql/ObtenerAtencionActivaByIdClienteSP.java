@@ -11,16 +11,21 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 
 @Component
-public class ObtenerAtencionByIdClienteSP extends StoredProcedure {
+public class ObtenerAtencionActivaByIdClienteSP extends StoredProcedure {
 
-    public ObtenerAtencionByIdClienteSP(@Autowired DataSource dataSource) {
-        super(dataSource, "OBTENER_ATENCION_BY_ID_CLIENTE");
+    public ObtenerAtencionActivaByIdClienteSP(@Autowired DataSource dataSource) {
+        super(dataSource, "OBTENER_ATENCION_ACTIVA_BY_ID_CLIENTE");
 
         declareParameter(new SqlParameter("i_cliente_id", OracleTypes.NUMBER));
         declareParameter(new SqlOutParameter("o_id", OracleTypes.NUMBER));
+        declareParameter(new SqlOutParameter("o_total", OracleTypes.NUMBER));
+        declareParameter(new SqlOutParameter("o_fecha", OracleTypes.TIMESTAMP));
+        declareParameter(new SqlOutParameter("o_esta_activo", OracleTypes.NUMBER));
+        declareParameter(new SqlOutParameter("o_esta_pagada", OracleTypes.NUMBER));
         declareParameter(new SqlOutParameter("o_numero_mesa", OracleTypes.NUMBER));
         declareParameter(new SqlOutParameter("o_sql_code", OracleTypes.NUMBER));
         compile();
@@ -35,6 +40,10 @@ public class ObtenerAtencionByIdClienteSP extends StoredProcedure {
 
         Atencion atencion = new Atencion();
         atencion.setId((BigDecimal) resultMap.get("o_id"));
+        atencion.setTotal((BigDecimal) resultMap.get("o_total"));
+        atencion.setFecha((Date) resultMap.get("o_fecha"));
+        atencion.setEstaActivo(((BigDecimal) resultMap.get("o_esta_activo")).compareTo(BigDecimal.ONE) == 0);
+        atencion.setEstaPagada(((BigDecimal) resultMap.get("o_esta_pagada")).compareTo(BigDecimal.ONE) == 0);
         atencion.setClienteId(clienteId);
         atencion.setNumeroMesa((BigDecimal) resultMap.get("o_numero_mesa"));
 

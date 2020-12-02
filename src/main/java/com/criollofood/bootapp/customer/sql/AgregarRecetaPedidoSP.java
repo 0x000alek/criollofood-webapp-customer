@@ -23,11 +23,12 @@ public class AgregarRecetaPedidoSP extends StoredProcedure {
         declareParameter(new SqlParameter("i_comentario", OracleTypes.VARCHAR));
         declareParameter(new SqlParameter("i_pedido_id", OracleTypes.NUMBER));
         declareParameter(new SqlParameter("i_receta_id", OracleTypes.NUMBER));
+        declareParameter(new SqlOutParameter("o_id", OracleTypes.NUMBER));
         declareParameter(new SqlOutParameter("o_sql_code", OracleTypes.NUMBER));
         compile();
     }
 
-    public boolean execute(RecetaPedido recetaPedido) {
+    public RecetaPedido execute(RecetaPedido recetaPedido) {
         Map<String, Object> parametersMap = new HashMap<>(Collections.emptyMap());
 
         parametersMap.put("i_comentario", recetaPedido.getComentario());
@@ -35,8 +36,15 @@ public class AgregarRecetaPedidoSP extends StoredProcedure {
         parametersMap.put("i_receta_id", recetaPedido.getRecetaId());
 
         Map<String, Object> resultMap = super.execute(parametersMap);
-        BigDecimal sqlCode = (BigDecimal) resultMap.get("o_sql_code");
 
-        return sqlCode.compareTo(BigDecimal.ONE) == 0;
+        BigDecimal sqlCode = (BigDecimal) resultMap.get("o_sql_code");
+        if (sqlCode.compareTo(BigDecimal.ZERO) == 0) {
+            return null;
+        }
+
+        recetaPedido.setId((BigDecimal) resultMap.get("o_id"));
+        recetaPedido.setEstado("PENDIENTE");
+
+        return recetaPedido;
     }
 }
