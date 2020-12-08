@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Controller
 public class ReservacionController {
@@ -44,6 +45,7 @@ public class ReservacionController {
         ModelAndView modelAndView = new ModelAndView();
         Cliente cliente = (Cliente) session.getAttribute("cliente");
 
+        modelAndView.addObject("currentDate", new Date());
         modelAndView.addObject("reservacion", new Reservacion(cliente.getNombre(), cliente.getTelefono()));
         modelAndView.addObject("reservaciones", reservacionService.findByIdCliente(cliente.getId()));
         modelAndView.setViewName("reservaciones");

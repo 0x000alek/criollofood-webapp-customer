@@ -1,5 +1,6 @@
 package com.criollofood.bootapp.customer.sql;
 
+import com.criollofood.bootapp.customer.domain.Pedido;
 import oracle.jdbc.OracleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -25,17 +25,19 @@ public class CrearPedidoSP extends StoredProcedure {
         compile();
     }
 
-    public BigDecimal execute(BigDecimal atencionId) {
-        Map<String, Object> parametersMap = new HashMap<>(Collections.emptyMap());
+    public Pedido execute(BigDecimal atencionId) {
+        Map<String, Object> resultMap = super.execute(Collections.singletonMap("i_atencion_id", atencionId));
 
-        parametersMap.put("i_atencion_id", atencionId);
-
-        Map<String, Object> resultMap = super.execute(parametersMap);
         BigDecimal sqlCode = (BigDecimal) resultMap.get("o_sql_code");
         if (sqlCode.compareTo(BigDecimal.ZERO) == 0) {
             return null;
         }
 
-        return (BigDecimal) resultMap.get("o_pedido_id");
+        Pedido pedido = new Pedido();
+
+        pedido.setId((BigDecimal) resultMap.get("o_pedido_id"));
+        pedido.setAtencionId(atencionId);
+
+        return pedido;
     }
 }

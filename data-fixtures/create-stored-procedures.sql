@@ -176,7 +176,7 @@ BEGIN
     v_fecha_ingreso := CURRENT_TIMESTAMP;
 
     insert into ATENCION_PEDIDO (ESTADO, FECHA_INGRESO, ATENCION_ID, GARZON_ID)
-    values ('INGRESADO', v_fecha_ingreso, i_atencion_id, 21);
+    values ('PENDIENTE', v_fecha_ingreso, i_atencion_id, 21);
 
     select ID into v_pedido_id from ATENCION_PEDIDO where FECHA_INGRESO = v_fecha_ingreso;
 

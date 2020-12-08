@@ -17,23 +17,21 @@
         <div class="col-lg-8" th:if="${reservaciones.size() > 0}">
             <ul class="list-group list-group-flush mb-4">
                 <li class="list-group-item" th:each="reserv : ${reservaciones}">
-                    <form action="#" th:action="@{/pedido/quitar}" method="POST">
-                        <div class="d-flex">
-                            <h6 class="m-0 mr-2 align-self-center">
-                                <i class="fa fa-calendar"></i>
-                                <span th:text="${#dates.format(reserv.fecha, 'dd/MM/yyyy')}"></span>
-                            </h6>
-                            <small class="text-muted align-self-center">
-                                <i class="fa fa-users"></i>
-                                <span th:text="${reserv.asistentes} + ' personas'"></span>
-                            </small>
-                            <a href="#" role="button" class="btn btn-outline-danger btn-sm ml-auto"
-                               th:if="${reserv.estado == 'CONFIRMADA'}"
-                               th:href="@{/reservaciones/{id}/cancelar(id=${reserv.id})}"
-                               data-toggle="tooltip" data-placement="right" title="Cancelar"><i class="fa fa-calendar-times-o"></i>
-                            </a>
-                        </div>
-                    </form>
+                    <div class="d-flex">
+                        <h6 class="m-0 mr-2 align-self-center">
+                            <i class="fa fa-calendar"></i>
+                            <span th:text="${#dates.format(reserv.fecha, 'dd/MM/yyyy')}"></span>
+                        </h6>
+                        <small class="text-muted align-self-center">
+                            <i class="fa fa-users"></i>
+                            <span th:text="${reserv.asistentes} + ' personas'"></span>
+                        </small>
+                        <a href="#" role="button" class="btn btn-outline-danger btn-sm ml-auto"
+                           th:if="${reserv.estado == 'CONFIRMADA'}"
+                           th:href="@{/reservaciones/{id}/cancelar(id=${reserv.id})}"
+                           data-toggle="tooltip" data-placement="right" title="Cancelar"><i class="fa fa-calendar-times-o"></i>
+                        </a>
+                    </div>
                     <small class="text-muted" th:text="${reserv.estado}"></small>
                 </li>
             </ul>

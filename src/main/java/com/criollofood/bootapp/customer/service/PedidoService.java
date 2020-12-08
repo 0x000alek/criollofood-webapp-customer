@@ -40,14 +40,14 @@ public class PedidoService {
     }
 
     public Pedido create(BigDecimal atencionId) {
-        BigDecimal pedidoId = crearPedidoSP.execute(atencionId);
-        if (Objects.isNull(pedidoId)) {
+        Pedido pedido = crearPedidoSP.execute(atencionId);
+        if (Objects.isNull(pedido)) {
             return null;
         }
 
         Map<BigDecimal, RecetaPedido> recetasPedido = new LinkedHashMap<>(Collections.emptyMap());
         items.forEach((k,v) -> {
-            v.setPedidoId(pedidoId);
+            v.setPedidoId(pedido.getId());
             RecetaPedido recetaPedido = agregarRecetaPedidoSP.execute(v);
             recetasPedido.put(recetaPedido.getId(), recetaPedido);
         });
@@ -55,34 +55,35 @@ public class PedidoService {
         items.clear();
         items.putAll(recetasPedido);
 
-        Pedido pedido = new Pedido(pedidoId);
-        pedido.setAtencionId(atencionId);
-
         return pedido;
     }
 
-    public Pedido findByIdAtencion(Atencion atencion) {
-        if (Objects.isNull(atencion)) {
-            items.clear();
-            return null;
-        }
-
-        Pedido pedido = obtenerPedidoByIdAtencion.execute(atencion.getId());
-        if (Objects.isNull(pedido)) {
-            items.clear();
-            return null;
-        }
-
-        listarRecetasByIdPedidoSP.execute(pedido.getId()).forEach(item -> {
-            items.put(item.getId(), item);
-        });
-
-        return pedido;
+    public Pedido findByAtencion(Atencion atencion) {
+        return Objects.isNull(atencion) ? null : obtenerPedidoByIdAtencion.execute(atencion.getId());
     }
 
-    public Pedido findByIdAtencionOrDefault(Atencion atencion, Pedido pedidoDefault) {
-        Pedido pedido = findByIdAtencion(atencion);
+    public Pedido findByAtencionOrDefault(Atencion atencion, Pedido pedidoDefault) {
+        Pedido pedido = findByAtencion(atencion);
         return Objects.isNull(pedido) ? pedidoDefault : pedido;
+    }
+
+    public Map<BigDecimal, RecetaPedido> findRecetasByPedido(Pedido pedido) {
+        if (!Objects.isNull(pedido)) {
+            listarRecetasByIdPedidoSP.execute(pedido.getId()).forEach(item -> {
+                items.put(item.getId(), item);
+            });
+        }
+        return items;
+    }
+
+    public Map<BigDecimal, RecetaPedido> findRecetasCuentaByPedido(Pedido pedido) {
+        Map<BigDecimal, RecetaPedido> recetasCuenta = new LinkedHashMap<>(Collections.emptyMap());
+        if (!Objects.isNull(pedido)) {
+            listarRecetasByIdPedidoSP.execute(pedido.getId()).forEach(item -> {
+                recetasCuenta.put(item.getId(), item);
+            });
+        }
+        return recetasCuenta;
     }
 
     public void addItem(RecetaPedido recetaPedido) {

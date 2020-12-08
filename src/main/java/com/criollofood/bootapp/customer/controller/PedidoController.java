@@ -1,8 +1,10 @@
 package com.criollofood.bootapp.customer.controller;
 
 import com.criollofood.bootapp.customer.domain.Atencion;
+import com.criollofood.bootapp.customer.domain.Cliente;
 import com.criollofood.bootapp.customer.domain.Pedido;
 import com.criollofood.bootapp.customer.domain.RecetaPedido;
+import com.criollofood.bootapp.customer.service.AtencionService;
 import com.criollofood.bootapp.customer.service.PedidoService;
 import com.criollofood.bootapp.customer.service.RecetaService;
 import com.criollofood.bootapp.customer.util.AuthenticationFacade;
@@ -22,13 +24,16 @@ public class PedidoController {
     private static final Logger LOGGER = LogManager.getLogger(PedidoController.class);
 
     private final AuthenticationFacade authenticationFacade;
+    private final AtencionService atencionService;
     private final PedidoService pedidoService;
     private final RecetaService recetaService;
 
     public PedidoController(@Autowired AuthenticationFacade authenticationFacade,
+                            @Autowired AtencionService atencionService,
                             @Autowired PedidoService pedidoService,
                             @Autowired RecetaService recetaService) {
         this.authenticationFacade = authenticationFacade;
+        this.atencionService = atencionService;
         this.pedidoService = pedidoService;
         this.recetaService = recetaService;
     }
@@ -40,9 +45,13 @@ public class PedidoController {
         }
         ModelAndView modelAndView = new ModelAndView();
 
-        modelAndView.addObject("atencion", (Atencion) session.getAttribute("atencion"));
-        modelAndView.addObject("pedido", (Pedido) session.getAttribute("pedido"));
-        modelAndView.addObject("itemsPedido", pedidoService.getItems());
+        Cliente cliente = (Cliente) session.getAttribute("cliente");
+        Atencion atencion = atencionService.findByIdCliente(cliente.getId());
+        Pedido pedido = pedidoService.findByAtencion(atencion);
+
+        modelAndView.addObject("atencion", atencion);
+        modelAndView.addObject("pedido", pedido);
+        modelAndView.addObject("itemsPedido", pedidoService.findRecetasByPedido(pedido));
         modelAndView.addObject("recetas", recetaService.getRecetas());
         modelAndView.setViewName("pedido");
 

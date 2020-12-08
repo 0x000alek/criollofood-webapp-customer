@@ -66,11 +66,12 @@ public class LoginController {
 
             cliente = clienteService.findByCorreoOrDefault(correoCliente, new Cliente(correoCliente));
             Atencion atencion = atencionService.findByIdCliente(cliente.getId());
+            Pedido pedido = pedidoService.findByAtencion(atencion);
 
             session.setAttribute("cliente", cliente);
             session.setAttribute("atencion", atencion);
-            session.setAttribute("pedido", pedidoService.findByIdAtencion(atencion));
-            session.setAttribute("itemsPedido", pedidoService.getItems());
+            session.setAttribute("pedido", pedido);
+            session.setAttribute("itemsPedido", pedidoService.findRecetasByPedido(pedido));
 
             return new ModelAndView("redirect:/reservaciones");
         }

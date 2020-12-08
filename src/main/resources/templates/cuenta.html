@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <div th:replace="fragments/header :: header"></div>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar ('cuenta')"></div>
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item" th:each="item : ${itemsPedido}">
+                    <div class="d-flex">
+                        <h6 class="m-0 mr-2 align-self-center" th:text="${recetas.get(item.value.recetaId).nombre}"></h6>
+                        <small class="text-muted align-self-center" th:text="${item.value.comentario}"></small>
+                        <div class="ml-auto">
+                            <small class="text-mutted"
+                                   th:text="${#strings.replace(#strings.replace(#numbers.formatCurrency(recetas.get(item.value.recetaId).precio), '.00', ''), ',', '.')}">
+                            </small>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="float-right mr-3 pr-1" th:if="${itemsPedido.size() > 0}">
+                <span>Monto
+                    <small class="ml-4 pl-2 float-right" th:text="${#strings.replace(#strings.replace(#numbers.formatCurrency(monto), '.00', ''), ',', '.')}"></small>
+                </span>
+                <br>
+                <span>Propina (sugerida)
+                    <small class="ml-4 pl-2 float-right" th:text="${#strings.replace(#strings.replace(#numbers.formatCurrency(servicio), '.00', ''), ',', '.')}"></small>
+                </span>
+                <br>
+                <p><strong>Total<span class="ml-4 pl-2 float-right" th:text="${#strings.replace(#strings.replace(#numbers.formatCurrency(total), '.00', ''), ',', '.')}"></span></strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:insert="fragments/common-scripts :: common-scripts"></div>
+</body>
+</html>

@@ -35,10 +35,14 @@
                     <div class="d-flex">
                         <h6 class="m-0 mr-2 align-self-center" th:text="${recetas.get(item.value.recetaId).nombre}"></h6>
                         <small class="text-muted align-self-center" th:text="${item.value.comentario}"></small>
-                        <a href="#" role="button" class="btn btn-outline-danger btn-sm ml-auto"
-                           th:if="${pedido == null}" th:href="@{/pedido/items/{id}/quitar(id=${item.key})}"
-                           data-toggle="tooltip" data-placement="right" title="Quitar"><i class="fa fa-times"></i>
-                        </a>
+                        <div class="ml-auto">
+                            <small class="text-mutted"
+                                   th:text="${#strings.replace(#strings.replace(#numbers.formatCurrency(recetas.get(item.value.recetaId).precio), '.00', ''), ',', '.')}"></small>
+                            <a href="#" role="button" class="btn btn-outline-danger btn-sm"
+                               th:if="${pedido == null}" th:href="@{/pedido/items/{id}/quitar(id=${item.key})}"
+                               data-toggle="tooltip" data-placement="right" title="Quitar"><i class="fa fa-times"></i>
+                            </a>
+                        </div>
                     </div>
                     <small class="text-muted" th:if="${item.value.estado}" th:text="${item.value.estado}"></small>
                 </li>
@@ -51,6 +55,9 @@
                 </div>
                 <button type="submit" class="btn btn-primary float-right">CONFIRMAR PEDIDO</button>
             </form>
+            <div th:if="${pedido != null}">
+                <a href="#" th:href="@{/cuenta}" role="button" class="btn btn-primary float-right">PEDIR CUENTA</a>
+            </div>
         </div>
     </div>
 </div>
